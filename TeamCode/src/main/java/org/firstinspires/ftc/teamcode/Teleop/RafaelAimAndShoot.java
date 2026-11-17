@@ -14,7 +14,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 @TeleOp(name = "AutoAimAndShoot")
-public class AutoAimAndShoot extends LinearOpMode {
+public class RafaelAimAndShoot extends LinearOpMode {
 
     // Drivetrain Motors
     private DcMotor LB; // 0C

@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -31,20 +30,19 @@ public class Alpha extends LinearOpMode {
 
     // PID-controlled linear slide (see LinearSlideController.java)
     private LinearSlideController slide;
-
     double lbPower;
     double lfPower;
     double rbPower;
     double rfPower;
-    boolean shootingNectar = false;
-    boolean shootingPollen = false;
+    private boolean shootingNectar = false;
+    private boolean shootingPollen = false;
+    private boolean FLOWER_STATE = false;
+    private boolean FLYWHEEL_STATE = false;
 
     // Shooter velocity (tunable in FTC Dashboard)
     public static double NECTAR_VEL = 1750;
     public static double POLLEN_VEL = 1750;
-    private boolean FLOWER_STATE = false;
-    private boolean FLYWHEEL_STATE = false;
-
+    public static long flowerOnceTime = 750;
 
 
     @Override
@@ -69,11 +67,12 @@ public class Alpha extends LinearOpMode {
         LB.setDirection(DcMotor.Direction.REVERSE);
         LF.setDirection(DcMotor.Direction.REVERSE);
         Pollen.setDirection(DcMotor.Direction.REVERSE);
-        LS.setDirection(DcMotor.Direction.REVERSE);
         //INTAKE.setDirection(DcMotor.Direction.REVERSE);
-        FLOWERGATE.setDirection(CRServo.Direction.REVERSE);
+
         FLYWHEELGATE.setPower(0.8);
+        FLOWERGATE.setDirection(CRServo.Direction.REVERSE);
         FLOWERGATE.setPower(-0.25);
+
 
         // Reset encoders
         LB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -106,6 +105,7 @@ public class Alpha extends LinearOpMode {
             LinearSlide();
             FlywheelGate();
             FlowerGate();
+            FlowerOnce();
 
 
             telemetry.addData("Status", "Run Time: " + runtime);
@@ -152,9 +152,28 @@ public class Alpha extends LinearOpMode {
         }
     }
 
+
+    private void Intake() {
+        if (gamepad1.left_trigger>0)
+            INTAKE.setPower(1);
+        else if (gamepad1.left_bumper)
+            INTAKE.setPower(-1);
+        else
+            INTAKE.setPower(0);
+    }
+
     // Linear slide: dpad_up toggles between up/down positions, held by PID
     private void LinearSlide() {
         slide.update(gamepad1.dpad_up);
+    }
+
+    public void FlywheelGate() {
+        if (gamepad1.dpad_right) {
+            FLYWHEEL_STATE=!FLYWHEEL_STATE;
+            if(FLYWHEEL_STATE) FLYWHEELGATE.setPower(-0.45);
+            else FLYWHEELGATE.setPower(0.8);
+            sleep(200);
+        }
     }
 
     public void FlowerGate() {
@@ -166,23 +185,16 @@ public class Alpha extends LinearOpMode {
         }
     }
 
-    public void FlywheelGate() {
-       if (gamepad1.dpad_right) {
-            FLYWHEEL_STATE=!FLYWHEEL_STATE;
-            if(FLYWHEEL_STATE) FLYWHEELGATE.setPower(-0.45);
-            else FLYWHEELGATE.setPower(0.8);
-            sleep(200);
+    public void FlowerOnce() {
+        if (gamepad1.dpad_down) {
+            FLOWERGATE.setPower(-0.25);
+            sleep( 10);
+            FLOWERGATE.setPower(0.75);
+            sleep( flowerOnceTime);
+            FLOWERGATE.setPower(-0.25);
         }
     }
 
-    private void Intake() {
-        if (gamepad1.left_trigger>0)
-            INTAKE.setPower(1);
-        else if (gamepad1.left_bumper)
-            INTAKE.setPower(-1);
-        else
-            INTAKE.setPower(0);
-    }
 
     private void Drive(){
         if (gamepad1.right_trigger>0) MecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x,-gamepad1.right_stick_x );
