@@ -40,12 +40,12 @@ public class Alpha extends LinearOpMode {
     private boolean FLYWHEEL_STATE = false;
 
     // Shooter velocity (tunable in FTC Dashboard)
-    public static double NECTAR_VEL = 1750;
-    public static double POLLEN_VEL = 1750;
-    public static long flowerOnceTime = 750;
+    public static double NECTAR_VEL = 10000;
+    public static double POLLEN_VEL = 10000;
+    public static long flowerOnceTime = 550;
 
-    public static double posUp = 0.6;
-    public static double posDown = -0.7;
+    private double posUp = 0.6;
+    private double posDown = -0.7;
 
 
     @Override
