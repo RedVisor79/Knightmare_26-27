@@ -24,7 +24,7 @@ public class Alpha extends LinearOpMode {
     private DcMotorEx Nectar; // 0E
     private DcMotorEx Pollen; // 1E
     private DcMotor LS; //2E
-    private DcMotor INTAKE; // 3E
+    private DcMotorEx INTAKE; // 3E
     private CRServo FLYWHEELGATE;
     private CRServo FLOWERGATE;
 
@@ -40,8 +40,9 @@ public class Alpha extends LinearOpMode {
     private boolean FLYWHEEL_STATE = false;
 
     // Shooter velocity (tunable in FTC Dashboard)
-    public static double NECTAR_VEL = 10000;
-    public static double POLLEN_VEL = 10000;
+    public static double NECTAR_VEL = 100000;
+    public static double POLLEN_VEL = 100000;
+    public static double INTAKE_VEL = 7500;
     public static long flowerOnceTime = 550;
 
     private double posUp = 0.6;
@@ -61,7 +62,7 @@ public class Alpha extends LinearOpMode {
         Nectar = hardwareMap.get(DcMotorEx.class, "NECTAR");
         Pollen = hardwareMap.get(DcMotorEx.class, "POLLEN");
         LS = hardwareMap.get(DcMotor.class, "LS");
-        INTAKE = hardwareMap.get(DcMotor.class, "INTAKE");
+        INTAKE = hardwareMap.get(DcMotorEx.class, "INTAKE");
         FLYWHEELGATE = hardwareMap.get(CRServo.class, "FLYWHEEL");
         FLOWERGATE = hardwareMap.get(CRServo.class, "FLOWER");
 
@@ -71,7 +72,6 @@ public class Alpha extends LinearOpMode {
         LF.setDirection(DcMotor.Direction.REVERSE);
         Pollen.setDirection(DcMotor.Direction.REVERSE);
         LS.setDirection(DcMotor.Direction.REVERSE);
-        //INTAKE.setDirection(DcMotor.Direction.REVERSE);
         FLOWERGATE.setDirection(CRServo.Direction.REVERSE);
         FLYWHEELGATE.setPower(posUp);
         FLOWERGATE.setPower(-0.25);
@@ -161,11 +161,11 @@ public class Alpha extends LinearOpMode {
 
     private void Intake() {
         if (gamepad1.left_trigger>0)
-            INTAKE.setPower(1);
+            INTAKE.setVelocity(INTAKE_VEL);
         else if (gamepad1.left_bumper)
-            INTAKE.setPower(-1);
+            INTAKE.setVelocity(-INTAKE_VEL);
         else
-            INTAKE.setPower(0);
+            INTAKE.setVelocity(0);
     }
 
     // Linear slide: dpad_up toggles between up/down positions, held by PID
