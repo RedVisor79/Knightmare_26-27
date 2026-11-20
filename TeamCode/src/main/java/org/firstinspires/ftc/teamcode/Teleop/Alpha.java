@@ -12,7 +12,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-@TeleOp(name = "Teleop")
+@TeleOp(name = "АЛЬФА")
 public class Alpha extends LinearOpMode {
 
     private DcMotor LB; // 0C
@@ -25,8 +25,11 @@ public class Alpha extends LinearOpMode {
     private DcMotorEx Pollen; // 1E
     private DcMotor LS; //2E
     private DcMotorEx INTAKE; // 3E
-    private CRServo FLYWHEELGATE;
-    private CRServo FLOWERGATE;
+    private CRServo FLYWHEELGATE; //5S
+    private CRServo FLOWERGATE; // 2S
+    private CRServo UNLOCK; //4S
+    private CRServo CamServo; //3S
+    private CRServo FLOWGATE; //1S
 
     // PID-controlled linear slide (see LinearSlideController.java)
     private LinearSlideController slide;
@@ -38,6 +41,8 @@ public class Alpha extends LinearOpMode {
     private boolean shootingPollen = false;
     private boolean FLOWER_STATE = false;
     private boolean FLYWHEEL_STATE = false;
+    private boolean FLOW_STATE = false;
+    private boolean DRIVE_STATE = false;
 
     // Shooter velocity (tunable in FTC Dashboard)
     public static double NECTAR_VEL = 100000;
@@ -45,9 +50,21 @@ public class Alpha extends LinearOpMode {
     public static double INTAKE_VEL = 7500;
     public static long flowerOnceTime = 550;
 
-    private double posUp = 0.6;
-    private double posDown = -0.7;
+    //flywheel gate
+    private double posUp = 0.35;
+    private double posDown = -0.95;
 
+    //
+    private double flowerClose = 0;
+    private double flowerOpen = 0.75;
+
+    //flow gate
+    private double stopFlow = -0.4;
+    private double letFlow = 0;
+    public static long flowtime = 400;
+
+    //unlock flywheels
+    private double unlockpos = 0.15;
 
     @Override
     public void runOpMode() {
@@ -65,6 +82,8 @@ public class Alpha extends LinearOpMode {
         INTAKE = hardwareMap.get(DcMotorEx.class, "INTAKE");
         FLYWHEELGATE = hardwareMap.get(CRServo.class, "FLYWHEEL");
         FLOWERGATE = hardwareMap.get(CRServo.class, "FLOWER");
+        UNLOCK = hardwareMap.get(CRServo.class, "UNLOCK");
+        FLOWGATE = hardwareMap.get(CRServo.class, "FLOW");
 
 
         // Directions
@@ -72,9 +91,13 @@ public class Alpha extends LinearOpMode {
         LF.setDirection(DcMotor.Direction.REVERSE);
         Pollen.setDirection(DcMotor.Direction.REVERSE);
         LS.setDirection(DcMotor.Direction.REVERSE);
+        INTAKE.setDirection(DcMotorEx.Direction.REVERSE);
         FLOWERGATE.setDirection(CRServo.Direction.REVERSE);
         FLYWHEELGATE.setPower(posUp);
-        FLOWERGATE.setPower(-0.25);
+        FLOWERGATE.setPower(flowerClose);
+        UNLOCK.setPower(unlockpos);
+        FLOWGATE.setPower(stopFlow);
+
 
 
         // Reset encoders
@@ -92,7 +115,7 @@ public class Alpha extends LinearOpMode {
         slide = new LinearSlideController(LS);
         slide.init();
 
-        //telemetry.addLine("Здравствуйте!");
+        telemetry.addLine("Привет!");
         telemetry.addLine("안녕하세요");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -109,22 +132,24 @@ public class Alpha extends LinearOpMode {
             FlywheelGate();
             FlowerGate();
             FlowerOnce();
+            Flow();
 
 
             telemetry.addData("Status", "Run Time: " + runtime);
+            telemetry.addData("Drive State: ", DRIVE_STATE);
             telemetry.addData("Nectar Target:", NECTAR_VEL);
             telemetry.addData("Nectar Actual: ", Nectar.getVelocity());
             telemetry.addData("Pollen:", POLLEN_VEL);
             telemetry.addData("Pollen Actual: ", Pollen.getVelocity());
-            telemetry.addData("Slide Target", slide.getTarget());
+            /*telemetry.addData("Slide Target", slide.getTarget());
             telemetry.addData("Slide Pos", slide.getPosition());
-            telemetry.addData("Slide Power", slide.getPower());
+            telemetry.addData("Slide Power", slide.getPower());*/
             telemetry.addData("LB:", lbPower);
             telemetry.addData("LF:", lfPower);
             telemetry.addData("RB:", rbPower);
             telemetry.addData("RF:", rfPower);
-            telemetry.addData("Flywheel Power: ", FLYWHEELGATE.getPower());
-            telemetry.addData("Flower Power: ", FLOWERGATE.getPower());
+            /*telemetry.addData("Flywheel Power: ", FLYWHEELGATE.getPower());
+            telemetry.addData("Flower Power: ", FLOWERGATE.getPower());*/
 
             telemetry.update();
         }
@@ -145,7 +170,7 @@ public class Alpha extends LinearOpMode {
             shootingNectar = false;
             shootingPollen = false;
         }
-        if (gamepad1.right_bumper&&!shootingNectar&&!shootingPollen){
+        if (gamepad1.y&&!shootingNectar&&!shootingPollen){
             Nectar.setVelocity(-NECTAR_VEL);
             Pollen.setVelocity(-POLLEN_VEL);
             shootingNectar=true;
@@ -173,6 +198,15 @@ public class Alpha extends LinearOpMode {
         slide.update(gamepad1.dpad_up);
     }
 
+    public void Flow() {
+        if (gamepad1.right_trigger>0) {
+            FLOWGATE.setPower(letFlow);
+            sleep(flowtime);
+            FLOWGATE.setPower(stopFlow);
+            sleep(flowtime);
+        }
+    }
+
     public void FlywheelGate() {
         if (gamepad1.dpad_right) {
             FLYWHEEL_STATE=!FLYWHEEL_STATE;
@@ -185,25 +219,26 @@ public class Alpha extends LinearOpMode {
     public void FlowerGate() {
         if (gamepad1.dpad_left) {
             FLOWER_STATE=!FLOWER_STATE;
-            if(FLOWER_STATE) FLOWERGATE.setPower(0.75);
-            else FLOWERGATE.setPower(-0.25);
+            if(FLOWER_STATE) FLOWERGATE.setPower(flowerOpen);
+            else FLOWERGATE.setPower(flowerClose);
             sleep(200);
         }
     }
 
     public void FlowerOnce() {
         if (gamepad1.dpad_down) {
-            FLOWERGATE.setPower(-0.25);
+            FLOWERGATE.setPower(flowerClose);
             sleep( 10);
-            FLOWERGATE.setPower(0.75);
+            FLOWERGATE.setPower(flowerOpen);
             sleep( flowerOnceTime);
-            FLOWERGATE.setPower(-0.25);
+            FLOWERGATE.setPower(flowerClose);
         }
     }
 
 
     private void Drive(){
-        if (gamepad1.right_trigger>0) MecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x,-gamepad1.right_stick_x );
+        if (gamepad1.right_bumper) DRIVE_STATE = !DRIVE_STATE;
+        if (DRIVE_STATE) MecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x,-gamepad1.right_stick_x );
         else MecanumDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x,-gamepad1.right_stick_x );
     }
     private void MecanumDrive(double forward, double strafe, double turn){
