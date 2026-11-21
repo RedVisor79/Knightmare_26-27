@@ -51,8 +51,8 @@ public class Alpha extends LinearOpMode {
     public static long flowerOnceTime = 550;
 
     //flywheel gate
-    private double posUp = 0.35;
-    private double posDown = -0.95;
+    public static double posUp = 0.35;
+    public static double posDown = -0.95;
 
     //
     private double flowerClose = 0;
