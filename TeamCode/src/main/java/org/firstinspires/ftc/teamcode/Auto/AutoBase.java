@@ -6,25 +6,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
- * Shared time-based drive code for all autos.
+ * Shared time-based drive code for all autos (not an OpMode itself).
  * Robot starts with its back against the wall, facing into the field.
- *
- * Motors run in RUN_USING_ENCODER (velocity control), so speed stays consistent
- * as the battery drains. Drive encoders must be plugged in (same as TeleOp).
- *
- * Because the field is rotationally symmetric, every auto works on BOTH alliances:
- * just place the robot in the matching spot on the other side.
+ * Field is rotationally symmetric, so each auto works on BOTH alliances
+ * from the matching start spot.
  */
 @Config
 public abstract class AutoBase extends LinearOpMode {
 
-    // ---- Tune in FTC Dashboard (get speeds from the "Drive Calibration" auto) ----
-    public static double DRIVE_POWER = 0.5;        // keep <= ~0.7 so velocity control has headroom
-    public static double FORWARD_IN_PER_SEC = 25;  // inches/sec driving forward at DRIVE_POWER
-    public static double STRAFE_IN_PER_SEC = 20;   // inches/sec strafing at DRIVE_POWER
-    public static boolean FLIP_FRONT = false;      // set true if "forward" drives into the wall
-    public static long START_DELAY_MS = 0;         // wait before moving (stay out of partner's way)
-    public static long SETTLE_MS = 250;            // pause between moves
+    public static double DRIVE_POWER = 0.08;   // tuned on Primary; shared by every auto
+    public static boolean FLIP_FRONT = true;   // tuned: robot's front is the TeleOp "reverse" side
+    public static long START_DELAY_MS = 0;     // wait before moving (stay out of partner's way)
+    public static long SETTLE_MS = 250;        // pause after each move
 
     private DcMotor LB, LF, RB, RF;
 
@@ -44,7 +37,7 @@ public abstract class AutoBase extends LinearOpMode {
         for (DcMotor m : new DcMotor[]{LB, LF, RB, RF}) {
             m.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // stop where the timer ends
+            m.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
         telemetry.addData("Status", "Ready: back against wall, facing into field");
@@ -58,17 +51,15 @@ public abstract class AutoBase extends LinearOpMode {
         stopDrive();
     }
 
-    // ---- Moves (inches, robot-relative) ----
-    protected void forward(double inches)     { drive(Math.signum(inches), 0, Math.abs(inches) / FORWARD_IN_PER_SEC); }
-    protected void backward(double inches)    { forward(-inches); }
-    protected void strafeRight(double inches) { drive(0, Math.signum(inches), Math.abs(inches) / STRAFE_IN_PER_SEC); }
-    protected void strafeLeft(double inches)  { strafeRight(-inches); }
+    // ---- Moves at DRIVE_POWER for a set number of seconds ----
+    protected void forward(double seconds)     { drive(DRIVE_POWER, 0, seconds); }
+    protected void backward(double seconds)    { drive(-DRIVE_POWER, 0, seconds); }
+    protected void strafeRight(double seconds) { drive(0, DRIVE_POWER, seconds); }
+    protected void strafeLeft(double seconds)  { drive(0, -DRIVE_POWER, seconds); }
 
-    /** Drive for a fixed time. f/s are directions (-1..1): +f = forward, +s = right. */
-    protected void drive(double f, double s, double seconds) {
-        if (FLIP_FRONT) { f = -f; s = -s; }
-        double fwd = f * DRIVE_POWER;
-        double str = s * DRIVE_POWER;
+    /** fwd/str are signed powers: +fwd = forward, +str = right. */
+    protected void drive(double fwd, double str, double seconds) {
+        if (FLIP_FRONT) { fwd = -fwd; str = -str; }
 
         // Same mecanum math as TeleOp (turn = 0)
         double lb = fwd - str;
@@ -86,7 +77,7 @@ public abstract class AutoBase extends LinearOpMode {
 
         ElapsedTime timer = new ElapsedTime();
         while (opModeIsActive() && timer.seconds() < seconds) {
-            telemetry.addData("Moving", "f=%.1f s=%.1f  %.2f / %.2f s", f, s, timer.seconds(), seconds);
+            telemetry.addData("Moving", "%.2f / %.2f s", timer.seconds(), seconds);
             telemetry.update();
             idle();
         }
