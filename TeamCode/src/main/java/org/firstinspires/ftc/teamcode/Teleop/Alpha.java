@@ -170,7 +170,7 @@ public class Alpha extends LinearOpMode {
             shootingNectar = false;
             shootingPollen = false;
         }
-        if (gamepad1.y&&!shootingNectar&&!shootingPollen){
+/*        if (gamepad1.y&&!shootingNectar&&!shootingPollen){
             Nectar.setVelocity(-NECTAR_VEL);
             Pollen.setVelocity(-POLLEN_VEL);
             shootingNectar=true;
@@ -180,7 +180,7 @@ public class Alpha extends LinearOpMode {
             Pollen.setVelocity(0);
             shootingNectar = false;
             shootingPollen = false;
-        }
+        }*/
     }
 
 
@@ -208,7 +208,7 @@ public class Alpha extends LinearOpMode {
     }
 
     public void FlywheelGate() {
-        if (gamepad1.dpad_right) {
+        if (gamepad1.y) {
             FLYWHEEL_STATE=!FLYWHEEL_STATE;
             if(FLYWHEEL_STATE) FLYWHEELGATE.setPower(posDown);
             else FLYWHEELGATE.setPower(posUp);
@@ -217,7 +217,7 @@ public class Alpha extends LinearOpMode {
     }
 
     public void FlowerGate() {
-        if (gamepad1.dpad_left) {
+        if (gamepad1.dpad_right) {
             FLOWER_STATE=!FLOWER_STATE;
             if(FLOWER_STATE) FLOWERGATE.setPower(flowerOpen);
             else FLOWERGATE.setPower(flowerClose);
