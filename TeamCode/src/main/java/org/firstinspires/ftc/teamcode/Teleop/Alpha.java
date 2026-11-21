@@ -116,7 +116,7 @@ public class Alpha extends LinearOpMode {
         slide.init();
 
         telemetry.addLine("Привет!");
-        telemetry.addLine("안녕하세요");
+        //telemetry.addLine("안녕하세요");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -238,8 +238,8 @@ public class Alpha extends LinearOpMode {
 
     private void Drive(){
         if (gamepad1.right_bumper) DRIVE_STATE = !DRIVE_STATE;
-        if (DRIVE_STATE) MecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x,-gamepad1.right_stick_x );
-        else MecanumDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x,-gamepad1.right_stick_x );
+        if (DRIVE_STATE) MecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x,gamepad1.right_stick_x );
+        else MecanumDrive(gamepad1.left_stick_y, -gamepad1.left_stick_x,gamepad1.right_stick_x );
     }
     private void MecanumDrive(double forward, double strafe, double turn){
         // Mecanum drive calculations
