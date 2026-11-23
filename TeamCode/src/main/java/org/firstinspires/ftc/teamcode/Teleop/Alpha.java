@@ -48,7 +48,10 @@ public class Alpha extends LinearOpMode {
     public static double NECTAR_VEL = 100000;
     public static double POLLEN_VEL = 100000;
     public static double INTAKE_VEL = 7500;
-    public static long flowerOnceTime = 550;
+
+    //flower once
+    public static long flowerNectarOnceTime = 400;
+    public static long flowerPollenOnceTime = 350;
 
     //flywheel gate
     public static double posUp = 0.35;
@@ -131,7 +134,8 @@ public class Alpha extends LinearOpMode {
             LinearSlide();
             FlywheelGate();
             FlowerGate();
-            FlowerOnce();
+            FlowerNectarOnce();
+            FlowerPollenOnce();
             Flow();
 
 
@@ -217,7 +221,7 @@ public class Alpha extends LinearOpMode {
     }
 
     public void FlowerGate() {
-        if (gamepad1.dpad_right) {
+        if (gamepad1.dpad_left) {
             FLOWER_STATE=!FLOWER_STATE;
             if(FLOWER_STATE) FLOWERGATE.setPower(flowerOpen);
             else FLOWERGATE.setPower(flowerClose);
@@ -225,12 +229,22 @@ public class Alpha extends LinearOpMode {
         }
     }
 
-    public void FlowerOnce() {
+    public void FlowerNectarOnce() {
         if (gamepad1.dpad_down) {
             FLOWERGATE.setPower(flowerClose);
             sleep( 10);
             FLOWERGATE.setPower(flowerOpen);
-            sleep( flowerOnceTime);
+            sleep( flowerNectarOnceTime);
+            FLOWERGATE.setPower(flowerClose);
+        }
+    }
+
+    public void FlowerPollenOnce() {
+        if (gamepad1.dpad_right) {
+            FLOWERGATE.setPower(flowerClose);
+            sleep( 10);
+            FLOWERGATE.setPower(flowerOpen);
+            sleep( flowerPollenOnceTime);
             FLOWERGATE.setPower(flowerClose);
         }
     }

@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -19,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.Arrays;
 import java.util.List;
 
+*/
 /**
  * =====================================================================================
  *  АЛЬФА — BIOBUZZ (2026-27) TeleOp, Knightmares
@@ -76,7 +78,8 @@ import java.util.List;
  *  final values back into this file.
  *
  *  See README.md in this folder for the setup checklist, tuning order and troubleshooting.
- */
+ *//*
+
 @Config                    // exposes every public static field below to FTC Dashboard
 @TeleOp(name = "АЛЬФА")    // Driver Station name kept from the original OpMode
 public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
@@ -210,12 +213,16 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
     private static final int O_W = 8;       // 8 = pollen flywheel, 9 = nectar flywheel (O_W + P or N)
     private final double[] last = new double[10];  // filled with NaN at init so the first write always goes out
 
-    /** Set power (or servo position) only if it differs from what was last sent. */
+    */
+/** Set power (or servo position) only if it differs from what was last sent. *//*
+
     private void out(DcMotorSimple d, int id, double v) {
         if (v != last[id]) { d.setPower(v); last[id] = v; }   // NaN != anything, so the first call always sends
     }
 
-    /** Set velocity (ticks/s) only if it differs from what was last sent. */
+    */
+/** Set velocity (ticks/s) only if it differs from what was last sent. *//*
+
     private void vel(DcMotorEx m, int id, double v) {
         if (v != last[id]) { m.setVelocity(v); last[id] = v; }
     }
@@ -232,7 +239,9 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
     private int bNow;   // buttons held this loop
     private int bPrev;  // buttons held last loop
 
-    /** Snapshot every button we use into one int. Called once per loop. */
+    */
+/** Snapshot every button we use into one int. Called once per loop. *//*
+
     private void readButtons(Gamepad g) {
         bPrev = bNow;
         bNow = (g.a ? B_A : 0) | (g.b ? B_B : 0) | (g.x ? B_X : 0) | (g.y ? B_Y : 0)
@@ -241,7 +250,9 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
                 | (g.right_trigger > 0.3 ? B_RT : 0);   // trigger counts as "pressed" past 30% travel
     }
 
-    /** True only on the single loop where button b goes from up to down. */
+    */
+/** True only on the single loop where button b goes from up to down. *//*
+
     private boolean pressed(int b) { return (bNow & b) != 0 && (bPrev & b) == 0; }
 
     // ---- Misc loop state ----
@@ -370,7 +381,9 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
     // =================================================================================
     //  DRIVE
     // =================================================================================
-    /** Mecanum drive. Same math and sign conventions as the old Drive()/MecanumDrive(). */
+    */
+/** Mecanum drive. Same math and sign conventions as the old Drive()/MecanumDrive(). *//*
+
     private void drive(Gamepad g) {
         if (pressed(B_RB)) flip = !flip;   // edge-detected: one press = one flip (old code flipped every loop)
 
@@ -417,25 +430,33 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
     private final double[] wv = new double[2];       // measured speed this loop, ticks/s
     private final int[] shotCnt = new int[2];        // shots detected per wheel since start (telemetry "fired")
 
-    /** Target speed for wheel w. Read from the tunables every call, so Dashboard edits apply immediately. */
+    */
+/** Target speed for wheel w. Read from the tunables every call, so Dashboard edits apply immediately. *//*
+
     private double tgt(int w) { return w == N ? NECTAR_VEL : POLLEN_VEL; }
 
-    /** Wheel w is on AND within READY_TOL of its target. */
+    */
+/** Wheel w is on AND within READY_TOL of its target. *//*
+
     private boolean near(int w) {
         double t = tgt(w);
         return on[w] && Math.abs(wv[w] - t) <= t * READY_TOL;
     }
 
-    /**
+    */
+/**
      * Is the wheel a ball of this type needs ready? An unknown ball could go to either wheel,
      * so both must be ready. With USE_VEL_READY off this always says yes (timing only).
-     */
+     *//*
+
     private boolean ready(int type) {
         if (!USE_VEL_READY) return true;
         return type == U ? near(P) && near(N) : near(type);
     }
 
-    /** Flywheel buttons and shot detection. Runs before the sequence so it sees fresh shot counts. */
+    */
+/** Flywheel buttons and shot detection. Runs before the sequence so it sees fresh shot counts. *//*
+
     private void readWheels() {
         // A/B latch a wheel on until X. Same behaviour as the old code (its setVelocity stayed
         // in effect after release); the state is now tracked so the smart shoot knows it.
@@ -484,14 +505,18 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
     private final ElapsedTime snapT = new ElapsedTime();    // time since this snapshot started
     private final ElapsedTime settleT = new ElapsedTime();  // time since the chamber last changed
 
-    /** The chamber contents changed: stop trusting q, and re-index once things settle. */
+    */
+/** The chamber contents changed: stop trusting q, and re-index once things settle. *//*
+
     private void dirty() {
         snapValid = false;
         autoIdx = true;
         settleT.reset();
     }
 
-    /** Begin collecting frames. Does nothing if a snapshot is already running. */
+    */
+/** Begin collecting frames. Does nothing if a snapshot is already running. *//*
+
     private void snap() {
         if (snapping) return;
         for (int[] v : votes) Arrays.fill(v, 0);
@@ -501,11 +526,13 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         snapT.reset();
     }
 
-    /**
+    */
+/**
      * Called every loop. Starts snapshots (dpad_left, or automatically once the chamber has
      * settled) and feeds new camera frames into the vote. Only reads the camera while a
      * snapshot is running, so it costs nothing the rest of the time.
-     */
+     *//*
+
     private void camera() {
         if (pressed(B_DL)) snap();   // manual test snapshot
 
@@ -548,12 +575,14 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         }
     }
 
-    /**
+    */
+/**
      * CAM_MODE 0: read the output of limelight_ball_indexer.py.
      * Format: [1, count, s0, s1, s2, s3, ...]. The leading 1 is a heartbeat proving the
      * script ran. Slot codes: 1 = pollen, 2 = red nectar, 3 = blue nectar.
      * Returns the ball count, or -1 if the frame is unusable.
-     */
+     *//*
+
     private int readPython(LLResult r) {
         double[] o = r.getPythonOutput();
         if (o == null || o.length < 2 + MAX || o[0] != 1) return -1;   // not our script, or no heartbeat
@@ -565,12 +594,14 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         return c;
     }
 
-    /**
+    */
+/**
      * CAM_MODE 1: read a Limelight neural DETECTOR pipeline (e.g. a community BIOBUZZ model
      * with classes "Pollen", "RedNectar", "BlueNectar"). Keeps confident detections whose
      * class name contains "pollen" or "nectar", sorted by position along the chamber, and
      * keeps the 4 closest to the gate. The insertion sort uses fixed arrays: no garbage.
-     */
+     *//*
+
     private int readDetector(LLResult r) {
         List<LLResultTypes.DetectorResult> ds = r.getDetectorResults();
         if (ds == null) return -1;
@@ -624,32 +655,43 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
     private final ElapsedTime seqT = new ElapsedTime();  // time in the current step
     private String msg = "ready";                     // last result, shown in telemetry
 
-    /** Change step and restart the step timer. */
+    */
+/** Change step and restart the step timer. *//*
+
     private void go(int s) { seq = s; seqT.reset(); }
 
-    /** Open or close the flywheel gate. */
+    */
+/** Open or close the flywheel gate. *//*
+
     private void fw(boolean block) {
         fwBlocked = block;
         out(FWGATE, O_FW, block ? FW_BLOCK : FW_PASS);
     }
 
-    /** How long a ball of this type takes to fully pass the flywheel gate. Unknown uses the bigger (nectar) time. */
+    */
+/** How long a ball of this type takes to fully pass the flywheel gate. Unknown uses the bigger (nectar) time. *//*
+
     private double clearTime(int type) { return type == P ? POLLEN_CLEAR_MS : NECTAR_CLEAR_MS; }
 
-    /** Longest wait a wheel can need between two of its own balls. */
+    */
+/** Longest wait a wheel can need between two of its own balls. *//*
+
     private double holdCap(int w) { return w == P ? PP_HOLD_MS : NN_HOLD_MS; }
 
-    /**
+    */
+/**
      * Release ball si toward the sorter. For each wheel it will use, record the current
      * shot count, so a later dip on that wheel can be recognised as THIS ball firing.
-     */
+     *//*
+
     private void feed(boolean rest) {
         fromRest = rest;
         for (int w = 0; w < 2; w++) if (shots[si] == U || shots[si] == w) relMark[w] = shotCnt[w];
         go(S_FEED);
     }
 
-    /**
+    */
+/**
      * THE KEY RULE: may ball si enter the sorter right now?
      * For each wheel the ball needs (both for unknown):
      *   spaced = that wheel's previous ball passed the gate at least PP_HOLD_MS / NN_HOLD_MS ago
@@ -660,7 +702,8 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
      * wheel yet, so it hasn't fired and isn't spaced. The hold ends the moment the wheel has
      * fired AND recovered, usually before the fixed cap, which is the "artificial delay"
      * kept as short as the flywheel physically allows.
-     */
+     *//*
+
     private boolean clearToFeed() {
         int t = shots[si];
         // SPACE_ALL off: a ball after a DIFFERENT type only needs its wheel at speed.
@@ -675,7 +718,9 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         return true;
     }
 
-    /** Smart shoot, advanced one step per loop. Never blocks. */
+    */
+/** Smart shoot, advanced one step per loop. Never blocks. *//*
+
     private void sequence() {
         double t = seqT.milliseconds();   // time spent in the current step
         switch (seq) {
@@ -772,7 +817,9 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         }
     }
 
-    /** Stop a sequence (finished, empty, or aborted) and put the gates back. */
+    */
+/** Stop a sequence (finished, empty, or aborted) and put the gates back. *//*
+
     private void end(String m, boolean stopWheels) {
         out(FLOW, O_FLOW, stopFlow);   // drop gate closed
         fw(false);                     // flywheel gate back to its normal open position
@@ -844,14 +891,18 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         }
     }
 
-    /** Flower open time for the ball that drops. */
+    */
+/** Flower open time for the ball that drops. *//*
+
     private double flowerBase(int type) {
         if (type == P) return FLOWER_POLLEN_MS;
         if (type == N) return FLOWER_NECTAR_MS;
         return FLOWER_UNKNOWN_MS;
     }
 
-    /** Adjustment for the ball BEHIND the dropping one (E = nothing behind, U = unknown: no change). */
+    */
+/** Adjustment for the ball BEHIND the dropping one (E = nothing behind, U = unknown: no change). *//*
+
     private double flowerTrim(int next) {
         if (next == P) return FLOWER_NEXT_POLLEN_TRIM_MS;
         if (next == N) return FLOWER_NEXT_NECTAR_TRIM_MS;
@@ -859,10 +910,12 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         return 0;
     }
 
-    /**
+    */
+/**
      * Drop exactly one ball through the flower gate. Replaces the old FlowerOnce(), which
      * blocked the robot for 560 ms and always used the same time.
-     */
+     *//*
+
     private void dropOne() {
         boolean far = FLOWER_FROM_FAR_END;
         boolean have = snapValid && qn > 0;   // do we actually know what's in the chamber?
@@ -913,3 +966,4 @@ public class LukeTeleopKnightmaresBIOBUZZ extends LinearOpMode {
         telemetry.update();
     }
 }
+*/
