@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.Teleop.bs;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Teleop.LinearSlideController;
 
 import java.util.Arrays;
 import java.util.List;

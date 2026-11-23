@@ -29,8 +29,6 @@ public class Alpha extends LinearOpMode {
     private CRServo FLOWERGATE; // 2S
     private CRServo UNLOCK; //4S
     private CRServo CamServo; //3S
-    private CRServo FLOWGATE; //1S
-
     // PID-controlled linear slide (see LinearSlideController.java)
     private LinearSlideController slide;
     double lbPower;
@@ -41,7 +39,6 @@ public class Alpha extends LinearOpMode {
     private boolean shootingPollen = false;
     private boolean FLOWER_STATE = false;
     private boolean FLYWHEEL_STATE = false;
-    private boolean FLOW_STATE = false;
     private boolean DRIVE_STATE = false;
 
     // Shooter velocity (tunable in FTC Dashboard)
@@ -86,7 +83,6 @@ public class Alpha extends LinearOpMode {
         FLYWHEELGATE = hardwareMap.get(CRServo.class, "FLYWHEEL");
         FLOWERGATE = hardwareMap.get(CRServo.class, "FLOWER");
         UNLOCK = hardwareMap.get(CRServo.class, "UNLOCK");
-        FLOWGATE = hardwareMap.get(CRServo.class, "FLOW");
 
 
         // Directions
@@ -99,8 +95,6 @@ public class Alpha extends LinearOpMode {
         FLYWHEELGATE.setPower(posUp);
         FLOWERGATE.setPower(flowerClose);
         UNLOCK.setPower(unlockpos);
-        FLOWGATE.setPower(stopFlow);
-
 
 
         // Reset encoders
@@ -174,17 +168,6 @@ public class Alpha extends LinearOpMode {
             shootingNectar = false;
             shootingPollen = false;
         }
-/*        if (gamepad1.y&&!shootingNectar&&!shootingPollen){
-            Nectar.setVelocity(-NECTAR_VEL);
-            Pollen.setVelocity(-POLLEN_VEL);
-            shootingNectar=true;
-            shootingPollen=true;
-            sleep(10);
-            Nectar.setVelocity(0);
-            Pollen.setVelocity(0);
-            shootingNectar = false;
-            shootingPollen = false;
-        }*/
     }
 
 
@@ -204,9 +187,9 @@ public class Alpha extends LinearOpMode {
 
     public void Flow() {
         if (gamepad1.right_trigger>0) {
-            FLOWGATE.setPower(letFlow);
+            FLYWHEELGATE.setPower(posDown);
             sleep(flowtime);
-            FLOWGATE.setPower(stopFlow);
+            FLYWHEELGATE.setPower(posUp);
             sleep(flowtime);
         }
     }
@@ -248,7 +231,6 @@ public class Alpha extends LinearOpMode {
             FLOWERGATE.setPower(flowerClose);
         }
     }
-
 
     private void Drive(){
         if (gamepad1.right_bumper) DRIVE_STATE = !DRIVE_STATE;
