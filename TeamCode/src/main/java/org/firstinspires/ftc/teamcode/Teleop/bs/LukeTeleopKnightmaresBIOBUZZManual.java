@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.Teleop.bs;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -13,11 +14,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Teleop.LinearSlideController;
+import org.firstinspires.ftc.teamcode.Teleop.V1.LinearSlideController;
 
 import java.util.Arrays;
 import java.util.List;
 
+*/
 /**
  * =====================================================================================
  *  АЛЬФА РУЧНОЙ ("Alpha manual") — BIOBUZZ TeleOp, two controllers, MANUAL indexing
@@ -54,7 +56,8 @@ import java.util.List;
  *
  *  Shooting logic (spin-up, feed, per-wheel recovery holds, shot detection) is the same
  *  code as the camera version. Its comments explain each rule in more depth.
- */
+ *//*
+
 @Config
 @TeleOp(name = "АЛЬФА РУЧНОЙ")   // "Alpha manual": a different name, so both OpModes can be installed
 public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
@@ -162,7 +165,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
                 | (g2.left_bumper ? G2_UNDO : 0) | (g2.back ? G2_CLEAR : 0);
     }
 
-    /** True only on the loop where the button goes from up to down (one press = one action). */
+    */
+/** True only on the loop where the button goes from up to down (one press = one action). *//*
+
     private boolean pressed(int b) { return (bNow & b) != 0 && (bPrev & b) == 0; }
 
     // ---- Loop state ----
@@ -271,13 +276,17 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
 
     private void clearQ() { Arrays.fill(q, '-'); qn = 0; }
 
-    /** Colour letter -> ball type. Red and blue nectar are the same size, so they share a wheel. */
+    */
+/** Colour letter -> ball type. Red and blue nectar are the same size, so they share a wheel. *//*
+
     private static int type(char c) { return c == 'Y' ? P : N; }
 
-    /**
+    */
+/**
      * Index in q of the ball at position pos counted FROM THE DROP GATE (0 = touching the gate).
      * Entries are in intake order; FIRST_IN_AT_GATE says which end of the chamber that is.
-     */
+     *//*
+
     private int qi(int pos) { return FIRST_IN_AT_GATE ? pos : qn - 1 - pos; }
 
     // =================================================================================
@@ -357,18 +366,22 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
 
     private double holdCap(int w) { return w == P ? PP_HOLD_MS : NN_HOLD_MS; }
 
-    /** Release ball si; note each wheel's shot count so its dip can be matched to this ball. */
+    */
+/** Release ball si; note each wheel's shot count so its dip can be matched to this ball. *//*
+
     private void feed(boolean rest) {
         fromRest = rest;
         for (int w = 0; w < 2; w++) if (shots[si] == U || shots[si] == w) relMark[w] = shotCnt[w];
         go(S_FEED);
     }
 
-    /**
+    */
+/**
      * May ball si go in now? Its wheel(s) must have recovered from that wheel's previous ball:
      * (spaced by the cap OR a shot was detected) AND back at speed. Two of the same type in a
      * row are always held; the hold ends as soon as the wheel has fired and recovered.
-     */
+     *//*
+
     private boolean clearToFeed() {
         int t = shots[si];
         if (!SPACE_ALL && shots[si - 1] != t && t != U && shots[si - 1] != U) return ready(t);
@@ -444,7 +457,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         }
     }
 
-    /** Close up after a finished or aborted sequence. The ball list was already cleared at RT. */
+    */
+/** Close up after a finished or aborted sequence. The ball list was already cleared at RT. *//*
+
     private void end(String m, boolean stopWheels) {
         out(FLOW, O_FLOW, stopFlow);
         fw(false);
@@ -485,7 +500,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         return next == E ? FLOWER_LAST_EXTRA_MS : 0;   // unknown: no trim
     }
 
-    /** Drop one ball through the flower gate, timed from the operator's list, then remove it. */
+    */
+/** Drop one ball through the flower gate, timed from the operator's list, then remove it. *//*
+
     private void dropOne() {
         int pos = FLOWER_FROM_FAR_END ? qn - 1 : 0;    // position (from the gate) of the ball at the flower gate
         int nextPos = FLOWER_FROM_FAR_END ? qn - 2 : 1;
@@ -525,3 +542,4 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         telemetry.update();
     }
 }
+*/

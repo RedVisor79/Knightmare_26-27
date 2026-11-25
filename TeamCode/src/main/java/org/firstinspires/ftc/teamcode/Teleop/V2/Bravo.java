@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.Teleop.V2;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Teleop.V1.LinearSlideController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,8 +53,8 @@ import java.util.List;
  * Dashboard changes are lost on restart, so copy good values back into this file.
  */
 @Config
-@TeleOp(name = "GIMP TeleOp")
-public class Perfect extends LinearOpMode {
+@TeleOp(name = "Bravo")
+public class Bravo extends LinearOpMode {
 
     // =====================================================================
     //  TUNABLES
@@ -128,7 +130,7 @@ public class Perfect extends LinearOpMode {
     @Override
     public void runOpMode() {
         initHardware();
-        telemetry.addLine("Привет! GAMEPAD 2: Y pollen | B red nectar | X blue nectar | LB undo | BACK clear");
+        telemetry.addLine("GAMEPAD 2: Y pollen | B red nectar | X blue nectar | LB undo | BACK clear");
         telemetry.update();
 
         waitForStart();
@@ -228,10 +230,10 @@ public class Perfect extends LinearOpMode {
         if (pressed(operator.b, lastOperator.b)) addBall(Ball.RED_NECTAR);    // red button
         if (pressed(operator.x, lastOperator.x)) addBall(Ball.BLUE_NECTAR);   // blue button
 
-        if (pressed(operator.left_bumper, lastOperator.left_bumper) && ballCount() > 0) {
+        if (pressed(operator.right_bumper, lastOperator.right_bumper) && ballCount() > 0) {
             balls[ballCount() - 1] = Ball.EMPTY;   // undo: remove the last ball entered
         }
-        if (pressed(operator.back, lastOperator.back)) {
+        if (pressed(operator.right_trigger>0, lastOperator.right_trigger>0)) {
             Arrays.fill(balls, Ball.EMPTY);        // clear the whole list
         }
     }
@@ -313,7 +315,7 @@ public class Perfect extends LinearOpMode {
         double speed = 0;
         if (driver.left_trigger > 0.1) {
             speed = INTAKE_VEL;
-        } else if (driver.left_bumper) {
+        } else if (driver.right_bumper) {
             speed = -INTAKE_VEL;
         }
         if (speed != intakeSpeed) {   // only send a command to the hub when it changes
@@ -581,7 +583,6 @@ public class Perfect extends LinearOpMode {
                 slideMotor.getCurrentPosition() - slideDownPosition);
         telemetry.addData("Drive", "%s | loop %.1f ms", driveFlipped ? "FLIPPED" : "normal", loopMs);
         telemetry.update();
-        telemetry.addData("----- Hi -----");
         telemetry.update();
     }
 }

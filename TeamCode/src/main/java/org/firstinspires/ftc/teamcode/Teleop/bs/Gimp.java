@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+/*
+package org.firstinspires.ftc.teamcode.Teleop.bs;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -12,9 +13,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Teleop.V1.LinearSlideController;
+
 import java.util.Arrays;
 import java.util.List;
 
+*/
 /*
  * GIMP TeleOp — BIOBUZZ TeleOp, two controllers, manual ball order.
  *
@@ -37,10 +41,11 @@ import java.util.List;
  *   Every "public static" value can be changed live in FTC Dashboard
  *   (192.168.43.1:8080/dash). Dashboard changes are lost on restart, so copy good
  *   values back into this file.
- */
+ *//*
+
 @Config
 @TeleOp(name = "GIMP TeleOp")
-public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
+public class Gimp extends LinearOpMode {
 
     // =====================================================================
     //  BALL TYPES
@@ -179,7 +184,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         buttonsNow = b;
     }
 
-    /** True only on the one loop where the button goes from up to down. */
+    */
+/** True only on the one loop where the button goes from up to down. *//*
+
     private boolean justPressed(int button) {
         boolean downNow = (buttonsNow & button) != 0;
         boolean downBefore = (buttonsBefore & button) != 0;
@@ -324,7 +331,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         return (colour == 'Y') ? POLLEN : NECTAR;
     }
 
-    /** Where in ballList is the ball at this position from the drop gate? (0 = touching the gate) */
+    */
+/** Where in ballList is the ball at this position from the drop gate? (0 = touching the gate) *//*
+
     private int listIndexFromGate(int positionFromGate) {
         if (FIRST_IN_AT_GATE) {
             return positionFromGate;
@@ -386,7 +395,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         return (wheel == NECTAR) ? NECTAR_VEL : POLLEN_VEL;
     }
 
-    /** Wheel is on and within READY_TOL of its target speed. */
+    */
+/** Wheel is on and within READY_TOL of its target speed. *//*
+
     private boolean atSpeed(int wheel) {
         if (!wheelOn[wheel]) {
             return false;
@@ -457,7 +468,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         setPowerIfChanged(dropGate, SLOT_DROP_GATE, open ? DROP_OPEN : DROP_CLOSED);
     }
 
-    /** An unknown ball might go to either wheel, so it "uses" both. */
+    */
+/** An unknown ball might go to either wheel, so it "uses" both. *//*
+
     private static boolean usesWheel(int ballType, int wheel) {
         return ballType == UNKNOWN || ballType == wheel;
     }
@@ -508,7 +521,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         goTo(Step.WAIT);
     }
 
-    /** Gate closed. Open it once the current ball's wheel is ready, or once we've waited too long. */
+    */
+/** Gate closed. Open it once the current ball's wheel is ready, or once we've waited too long. *//*
+
     private void waitForWheel() {
         double waited = stepTimer.milliseconds();
         double timeLimit = (currentBall == 0) ? SPIN_TIMEOUT_MS : HOLD_MAX_MS;
@@ -520,7 +535,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         }
     }
 
-    /** Gate open. Once the ball has passed, either let the next one roll on or close the gate. */
+    */
+/** Gate open. Once the ball has passed, either let the next one roll on or close the gate. *//*
+
     private void feedBall() {
         int type = roundOrder[currentBall];
         double passTime = (type == POLLEN) ? POLLEN_CLEAR_MS : NECTAR_CLEAR_MS;
@@ -549,7 +566,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         }
     }
 
-    /** Start feeding the current ball. Remember each wheel's shot count so we can tell when THIS ball fires. */
+    */
+/** Start feeding the current ball. Remember each wheel's shot count so we can tell when THIS ball fires. *//*
+
     private void releaseBall(boolean fromRest) {
         startedFromRest = fromRest;
         for (int wheel = 0; wheel < 2; wheel++) {
@@ -560,13 +579,15 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         goTo(Step.FEED);
     }
 
-    /**
+    */
+/**
      * THE PAUSE RULE. May the current ball go now?
      * For each wheel it needs, that wheel must have recovered from its previous ball:
      *   (the previous ball was seen firing OR enough time has passed) AND the wheel is back at speed.
      * Two of the same type in a row are therefore always paused, and the pause ends as soon as
      * the wheel has really recovered. For the first ball this is simply "wheel at speed".
-     */
+     *//*
+
     private boolean currentBallMayGo() {
         int type = roundOrder[currentBall];
         double now = clock.milliseconds();
@@ -631,7 +652,9 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         }
     }
 
-    /** Open the flower gate for exactly one ball. The time depends on that ball and the one behind it. */
+    */
+/** Open the flower gate for exactly one ball. The time depends on that ball and the one behind it. *//*
+
     private void dropOneIntoFlower() {
         int dropPosition = FLOWER_FROM_FAR_END ? ballCount - 1 : 0;     // the ball at the flower gate
         int behindPosition = FLOWER_FROM_FAR_END ? ballCount - 2 : 1;   // the ball behind it
@@ -705,3 +728,4 @@ public class LukeTeleopKnightmaresBIOBUZZManual extends LinearOpMode {
         telemetry.update();
     }
 }
+*/
